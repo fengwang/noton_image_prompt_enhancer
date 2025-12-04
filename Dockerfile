@@ -1,14 +1,20 @@
-FROM python:3.12.6-slim-bookworm
-ENV DEBIAN_FRONTEND=noninteractive
-
+FROM node:20-alpine AS builder
 WORKDIR /app
 
-COPY requirements.txt /app
-RUN python -m pip install -r /app/requirements.txt
+COPY package.json package-lock.json* ./
+RUN npm ci
 
-COPY ImagePromptEnhancer.py /app/ImagePromptEnhancer.py
-COPY noton /app/noton
+COPY . .
+RUN npm run build
+
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+
+COPY package.json package-lock.json* ./
+RUN npm ci --omit=dev
+
+COPY --from=builder /app/dist ./dist
 
 EXPOSE 8501
-
-CMD ["streamlit", "run", "/app/ImagePromptEnhancer.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
+CMD ["node", "dist/server/index.js"]

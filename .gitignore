@@ -1,4 +1,10 @@
-noton/__pycache__
-__pycache__/
-local
-*.log
+node_modules
+.dist
+dist
+.env
+npm-debug.log*
+pnpm-lock.yaml
+yarn.lock
+.DS_Store
+.idea
+.vscode
