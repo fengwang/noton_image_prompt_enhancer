@@ -8,6 +8,9 @@ A TypeScript rebuild of the original Streamlit app. React + Vite UI on top of a 
 - Guided refinement (detail, mood, visual lens) plus prompt stats and one-click copy.
 - Tailwind CSS, React, Vite frontend; Express + OpenAI SDK backend.
 
+![Screenshot](./screenshot.png)
+
+
 ### Quick Start (dev)
 1) Install deps (Node 20+):
 ```bash
