@@ -12,14 +12,14 @@ app.use(express.json({ limit: "1mb" }));
 app.use(compression());
 
 app.post("/api/enhance", async (req: Request, res: Response) => {
-  const { prompt, baseUrl, model, apiKey } = req.body ?? {};
+  const { prompt, baseUrl, model, apiKey, outputLanguage } = req.body ?? {};
 
   if (!prompt || typeof prompt !== "string" || !prompt.trim()) {
     return res.status(400).json({ error: "Missing prompt" });
   }
 
   try {
-    const enhanced = await enhance(prompt, { baseUrl, model, apiKey });
+    const enhanced = await enhance(prompt, { baseUrl, model, apiKey, outputLanguage });
     return res.json({ enhanced });
   } catch (err) {
     console.error("Failed to enhance prompt", err);

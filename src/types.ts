@@ -1,6 +1,7 @@
 export type DetailLevel = "Subtle" | "Layered" | "Maximal";
 export type Mood = "Serene" | "Energetic" | "Dramatic" | "Playful" | "Mysterious";
 export type Medium = "Cinematic" | "Analog film" | "Illustration" | "Fashion editorial" | "Surreal concept";
+export type OutputLanguage = "English" | "Chinese" | "German";
 
 export interface RefinementOptions {
   detailLevel: DetailLevel;
@@ -11,6 +12,7 @@ export interface RefinementOptions {
 export interface EnhanceRequest {
   prompt: string;
   options: RefinementOptions;
+  outputLanguage?: OutputLanguage;
   baseUrl?: string;
   model?: string;
   apiKey?: string;

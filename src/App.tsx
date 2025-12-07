@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { enhancePrompt } from "./lib/api";
-import { detailOptions, mediumOptions, moodOptions, suggestionPrompts } from "./lib/constants";
-import { DetailLevel, Medium, Mood, RefinementOptions } from "./types";
+import { detailOptions, mediumOptions, moodOptions, outputLanguageOptions, suggestionPrompts } from "./lib/constants";
+import { DetailLevel, EnhanceRequest, Medium, Mood, OutputLanguage, RefinementOptions } from "./types";
 
 const defaultOptions: RefinementOptions = {
   detailLevel: "Layered",
@@ -9,14 +9,23 @@ const defaultOptions: RefinementOptions = {
   medium: "Cinematic"
 };
 
-function composePrompt(prompt: string, options: RefinementOptions): string {
+function composePrompt(prompt: string, options: RefinementOptions, outputLanguage: OutputLanguage): string {
   const modifiers = [
     `Detail level: ${options.detailLevel}`,
     `Mood: ${options.mood}`,
-    `Visual style: ${options.medium}`
+    `Visual style: ${options.medium}`,
+    `Desired output language: ${outputLanguage}`
   ];
 
-  return `${prompt.trim()}\n\nRefinement preferences: ${modifiers.join("; ")}`;
+  const languageInstruction = [
+    "Output requirements:",
+    `- Always write the final visual description entirely in ${outputLanguage}.`,
+    "- Do not mix in any other languages."
+  ].join("\n");
+
+  return `${prompt.trim()}\n\nRefinement preferences: ${modifiers.join(
+    "; "
+  )}\n\n${languageInstruction}`;
 }
 
 function App() {
@@ -30,6 +39,7 @@ function App() {
   const [model, setModel] = useState<string>("");
   const [apiKey, setApiKey] = useState<string>("");
   const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [outputLanguage, setOutputLanguage] = useState<OutputLanguage>("English");
 
   const wordCount = useMemo(() => {
     if (!userPrompt.trim()) return 0;
@@ -54,8 +64,8 @@ function App() {
     setIsLoading(true);
 
     try {
-      const promptWithGuidance = composePrompt(userPrompt, options);
-      const payload = { prompt: promptWithGuidance, options };
+      const promptWithGuidance = composePrompt(userPrompt, options, outputLanguage);
+      const payload: EnhanceRequest = { prompt: promptWithGuidance, options, outputLanguage };
 
       if (baseUrl.trim()) {
         Object.assign(payload, { baseUrl: baseUrl.trim() });
@@ -85,6 +95,7 @@ function App() {
     setBaseUrl("");
     setModel("");
     setApiKey("");
+    setOutputLanguage("English");
   };
 
   const handleCopy = async () => {
@@ -188,7 +199,7 @@ function App() {
                 Override server defaults per session. Keys are sent only with your request and not stored.
               </p>
             </div>
-            <div className="grid md:grid-cols-3 gap-3">
+            <div className="grid md:grid-cols-4 gap-3">
               <div className="space-y-1">
                 <label className="text-sm text-white/70" htmlFor="baseUrl">
                   Base URL
@@ -225,6 +236,23 @@ function App() {
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
                 />
+              </div>
+              <div className="space-y-1">
+                <label className="text-sm text-white/70" htmlFor="outputLanguage">
+                  Output language
+                </label>
+                <select
+                  id="outputLanguage"
+                  className="field"
+                  value={outputLanguage}
+                  onChange={(e) => setOutputLanguage(e.target.value as OutputLanguage)}
+                >
+                  {outputLanguageOptions.map((lang) => (
+                    <option key={lang} value={lang}>
+                      {lang}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 

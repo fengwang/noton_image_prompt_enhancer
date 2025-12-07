@@ -1,4 +1,4 @@
-import { DetailLevel, Medium, Mood } from "../types";
+import { DetailLevel, Medium, Mood, OutputLanguage } from "../types";
 
 export const suggestionPrompts: string[] = [
   "Neon-drenched Tokyo alley at midnight, rain-soaked pavement reflecting holographic signs.",
@@ -10,3 +10,4 @@ export const suggestionPrompts: string[] = [
 export const detailOptions: DetailLevel[] = ["Subtle", "Layered", "Maximal"];
 export const moodOptions: Mood[] = ["Serene", "Energetic", "Dramatic", "Playful", "Mysterious"];
 export const mediumOptions: Medium[] = ["Cinematic", "Analog film", "Illustration", "Fashion editorial", "Surreal concept"];
+export const outputLanguageOptions: OutputLanguage[] = ["English", "Chinese", "German"];
